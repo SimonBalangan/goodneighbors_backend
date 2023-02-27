@@ -12,9 +12,9 @@ const getAllUsers = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  const { name, age, hobbies } = req.body;
+  const { first_name, last_name, email, street, zip_code, age, borrowedProducts  } = req.body;
   try {
-    const newUser = await User.create({ name, age, hobbies });
+    const newUser = await User.create({ first_name, last_name, email, street, zip_code, age, borrowedProducts });
     res.status(201).json(newUser);
   } catch (err) {
     console.log(err);
@@ -35,11 +35,11 @@ const getSingleUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { name, age, hobbies } = req.body;
+  const { first_name, last_name, email, street, zip_code, age, borrowedProducts } = req.body;
   try {
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { name, age, hobbies },
+      { first_name, last_name, email, street, zip_code, age, borrowedProducts },
       { new: true }
     );
     res.status(200).json(updatedUser);
@@ -60,10 +60,22 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const getUserProducts = async (req, res) => {
+  const {id} = req.params;
+  try{
+    const userProducts = await User.findById(id).populate('products');
+    res.status(200).json(userProducts)
+  }
+  catch(err){
+    console.log(err);
+    res.status(500).send(err.message);
+  }
+}
+
 module.exports = {
   getAllUsers,
   createUser,
   getSingleUser,
   updateUser,
-  deleteUser,
+  deleteUser,getUserProducts
 };
